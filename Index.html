@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -53,24 +53,28 @@
         button:hover {
             background-color: #0056b3;
         }
+        .error {
+            color: red;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Login Section -->
+        <!-- Login Sectie -->
         <div id="login">
             <h1>Beveiligde Toepassing</h1>
             <p>Voer de beveiligingssleutel in:</p>
             <input type="password" id="authKey" placeholder="Beveiligingssleutel">
             <button onclick="authenticate()">Toegang</button>
-            <p id="error" style="color: red;"></p>
+            <p id="error" class="error"></p>
         </div>
 
-        <!-- Application Section -->
+        <!-- Applicatie Sectie (wordt pas zichtbaar na succesvolle login) -->
         <div id="app" class="hidden">
             <h1>Dashboard</h1>
 
-            <!-- Parkeerticket Functionaliteit -->
+            <!-- Parkeerfunctionaliteit -->
             <div class="section">
                 <h2>Parkeerticket</h2>
                 <input id="ticketInput" placeholder="Vul ticketnummer of tekst in">
@@ -90,10 +94,11 @@
     </div>
 
     <script>
-        const secureKey = "tovenaar"; // De beveiligingssleutel
-        const messages = []; // Array om berichten op te slaan
+        // Beveiligingssleutel
+        const secureKey = "tovenaar"; // De sleutel die toegang verleent tot de applicatie
+        const messages = []; // Array voor berichten in de chat
 
-        // Authenticatiefunctie
+        // Functie voor authenticatie
         function authenticate() {
             const key = document.getElementById("authKey").value;
             const error = document.getElementById("error");
@@ -102,49 +107,51 @@
                 document.getElementById("login").classList.add("hidden");
                 document.getElementById("app").classList.remove("hidden");
             } else {
-                error.textContent = "Onjuiste sleutel!";
+                error.textContent = "Onjuiste sleutel!"; // Geef foutmelding bij verkeerde sleutel
             }
         }
 
-        // Parkeerticket: Geheime Code Genereren
+        // Functie voor het genereren van geheime code van een parkeerticket
         function generateCode() {
             const input = document.getElementById("ticketInput").value;
             const output = document.getElementById("outputCode");
 
             if (input) {
-                const secretCode = btoa(input); // Encodeer tekst naar base64
+                const secretCode = btoa(input); // Base64 encoding van de tekst
                 output.textContent = `Gecodeerde tekst: ${secretCode}`;
             } else {
-                output.textContent = "Geen input gevonden!";
+                output.textContent = "Geen input gevonden!"; // Foutmelding als er geen input is
             }
         }
 
-        // Chatfunctie: Bericht Verzenden
+        // Functie voor het versturen van berichten in de chat
         function sendMessage() {
             const input = document.getElementById("messageInput");
             const message = input.value.trim();
 
             if (message) {
-                messages.push(message);
-                displayMessages();
-                input.value = "";
+                messages.push(message); // Voeg bericht toe aan de lijst
+                displayMessages(); // Toon de nieuwe berichten
+                input.value = ""; // Maak het inputveld leeg
+
+                // Berichten na 5 minuten verwijderen
                 setTimeout(() => {
-                    messages.shift(); // Verwijder oudste bericht na 5 minuten
+                    messages.shift(); // Verwijder het oudste bericht
                     displayMessages();
-                }, 300000);
+                }, 300000); // 300000 ms = 5 minuten
             }
         }
 
-        // Chatfunctie: Berichten Weergeven
+        // Functie om berichten weer te geven in de chat
         function displayMessages() {
             const messageContainer = document.getElementById("messages");
-            messageContainer.innerHTML = messages.map(msg => `<p>${msg}</p>`).join("");
+            messageContainer.innerHTML = messages.map(msg => `<p>${msg}</p>`).join(""); // Toon berichten
         }
 
-        // Chatfunctie: Reset
+        // Functie voor het resetten van de chat
         function resetChat() {
-            messages.length = 0;
-            displayMessages();
+            messages.length = 0; // Leeg de berichtenlijst
+            displayMessages(); // Werk de chat bij
         }
     </script>
 </body>

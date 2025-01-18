@@ -78,7 +78,7 @@
             <div class="section">
                 <h2>Parkeerticket</h2>
                 <input id="ticketInput" placeholder="Vul ticketnummer of tekst in">
-                <button onclick="generateCode()">Genereer Geheime Code</button>
+                <button onclick="generateSecretCode()">Genereer Geheime Code</button>
                 <p id="outputCode"></p>
             </div>
 
@@ -95,8 +95,7 @@
 
     <script>
         // Beveiligingssleutel
-        const secureKey = "tovenaar"; // De sleutel die toegang verleent tot de applicatie
-        const messages = []; // Array voor berichten in de chat
+        const secureKey = "tovenaar";
 
         // Functie voor authenticatie
         function authenticate() {
@@ -104,35 +103,46 @@
             const error = document.getElementById("error");
 
             if (key === secureKey) {
-                document.getElementById("login").classList.add("hidden");
-                document.getElementById("app").classList.remove("hidden");
+                // Als de sleutel correct is, geef toegang tot de applicatie
+                document.getElementById("login").style.display = "none";  // Verberg de login sectie
+                document.getElementById("app").style.display = "block";  // Toon de applicatie sectie
             } else {
-                error.textContent = "Onjuiste sleutel!"; // Geef foutmelding bij verkeerde sleutel
+                // Als de sleutel incorrect is, geef een foutmelding
+                error.textContent = "Onjuiste sleutel!";
             }
         }
 
-        // Functie voor het genereren van geheime code van een parkeerticket
-        function generateCode() {
+        // Functie voor geheime code genereren
+        function generateSecretCode() {
             const input = document.getElementById("ticketInput").value;
             const output = document.getElementById("outputCode");
 
             if (input) {
-                const secretCode = btoa(input); // Base64 encoding van de tekst
+                let secretCode = "";
+                for (let char of input) {
+                    // Voorbeeld van een simpele geheime taal: vervangen van letters door formules
+                    if (char === 'A') secretCode += "A = 1+1; ";
+                    else if (char === 'B') secretCode += "B = 2+2; ";
+                    else secretCode += `${char} = ${char.charCodeAt(0)}; `;
+                }
                 output.textContent = `Gecodeerde tekst: ${secretCode}`;
             } else {
-                output.textContent = "Geen input gevonden!"; // Foutmelding als er geen input is
+                output.textContent = "Geen input gevonden!";
             }
         }
 
-        // Functie voor het versturen van berichten in de chat
+        // Tijdelijke chat functionaliteit
+        const messages = [];  // Array voor berichten
+
+        // Functie om een bericht te versturen
         function sendMessage() {
             const input = document.getElementById("messageInput");
             const message = input.value.trim();
 
             if (message) {
-                messages.push(message); // Voeg bericht toe aan de lijst
-                displayMessages(); // Toon de nieuwe berichten
-                input.value = ""; // Maak het inputveld leeg
+                messages.push(message);  // Voeg bericht toe aan de lijst
+                displayMessages();       // Toon de nieuwe berichten
+                input.value = "";        // Maak het inputveld leeg
 
                 // Berichten na 5 minuten verwijderen
                 setTimeout(() => {
@@ -142,16 +152,16 @@
             }
         }
 
-        // Functie om berichten weer te geven in de chat
+        // Functie om berichten weer te geven
         function displayMessages() {
             const messageContainer = document.getElementById("messages");
             messageContainer.innerHTML = messages.map(msg => `<p>${msg}</p>`).join(""); // Toon berichten
         }
 
-        // Functie voor het resetten van de chat
+        // Functie om de chat te resetten
         function resetChat() {
-            messages.length = 0; // Leeg de berichtenlijst
-            displayMessages(); // Werk de chat bij
+            messages.length = 0;  // Leeg de berichtenlijst
+            displayMessages();    // Werk de chat bij
         }
     </script>
 </body>
